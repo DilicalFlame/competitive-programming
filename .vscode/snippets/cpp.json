@@ -1,0 +1,67 @@
+{
+    "Competitive Programming Template": {
+        "prefix": "cp",
+        "body": [
+            "#include <iostream>",
+            "#include <vector>",
+            "#include <algorithm>",
+            "#include <string>",
+            "#include <map>",
+            "#include <set>",
+            "#include <queue>",
+            "#include <stack>",
+            "#include <cmath>",
+            "using namespace std;",
+            "",
+            "typedef long long ll;",
+            "typedef vector<int> vi;",
+            "typedef vector<ll> vll;",
+            "typedef pair<int, int> pii;",
+            "",
+            "#define FAST_IO ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);",
+            "#define pb push_back",
+            "#define mp make_pair",
+            "#define fi first",
+            "#define se second",
+            "#define sz(x) ((int)(x).size())",
+            "#define all(x) (x).begin(), (x).end()",
+            "",
+            "int main() {",
+            "    FAST_IO",
+            "    $0",
+            "    return 0;",
+            "}"
+        ],
+        "description": "Competitive programming template with common includes and macros"
+    },
+    "Fast Input/Output": {
+        "prefix": "fastio",
+        "body": [
+            "ios_base::sync_with_stdio(false);",
+            "cin.tie(NULL);",
+            "cout.tie(NULL);"
+        ],
+        "description": "Fast I/O for competitive programming"
+    },
+    "Read Vector": {
+        "prefix": "readvec",
+        "body": [
+            "vector<${1:int}> ${2:arr}(${3:n});",
+            "for(int i = 0; i < ${3:n}; i++) {",
+            "    cin >> ${2:arr}[i];",
+            "}"
+        ],
+        "description": "Read vector of size n"
+    },
+    "Print Vector": {
+        "prefix": "printvec",
+        "body": [
+            "for(int i = 0; i < ${1:arr}.size(); i++) {",
+            "    cout << ${1:arr}[i];",
+            "    if(i < ${1:arr}.size() - 1) cout << \" \";",
+            "}",
+            "cout << endl;"
+        ],
+        "description": "Print vector with spaces"
+    }
+}

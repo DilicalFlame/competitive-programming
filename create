@@ -1,0 +1,58 @@
+#!/bin/bash
+
+# Competitive Programming File Generator
+# Creates boilerplate files for different platforms
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+
+echo -e "${CYAN}🚀 Competitive Programming File Generator${NC}"
+echo -e "${BLUE}==========================================${NC}"
+
+# Check if Python script exists
+PYTHON_SCRIPT="$SCRIPT_DIR/scripts/file_generator.py"
+
+if [ ! -f "$PYTHON_SCRIPT" ]; then
+    echo -e "${RED}❌ Error: Python script not found at $PYTHON_SCRIPT${NC}"
+    exit 1
+fi
+
+# Check for required Python packages and install if missing
+echo -e "${YELLOW}🔍 Checking dependencies...${NC}"
+
+# Function to install packages if not available
+install_if_missing() {
+    local package=$1
+    if ! uv run python -c "import $package" 2>/dev/null; then
+        echo -e "${YELLOW}📦 Installing $package...${NC}"
+        uv add $package 2>/dev/null || {
+            echo -e "${YELLOW}⚠️  Could not install $package automatically. Falling back to basic UI.${NC}"
+        }
+    fi
+}
+
+# Try to install optional packages for better UI
+install_if_missing "rich"
+install_if_missing "inquirer"
+
+echo -e "${GREEN}✅ Dependencies checked${NC}"
+echo
+
+# Run the Python script
+uv run python "$PYTHON_SCRIPT" "$@"
+
+# Check if the script ran successfully
+if [ $? -eq 0 ]; then
+    echo -e "\n${GREEN}🎉 Happy coding! Good luck with your competitive programming!${NC}"
+else
+    echo -e "\n${RED}❌ Something went wrong. Please check the error messages above.${NC}"
+    exit 1
+fi

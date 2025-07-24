@@ -1,0 +1,10 @@
+[project]
+name = "cp"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "inquirer>=3.4.0",
+    "rich>=14.0.0",
+]

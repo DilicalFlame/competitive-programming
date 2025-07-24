@@ -1,0 +1,82 @@
+#!/bin/bash
+
+# Competitive Programming Test Runner
+# Compiles and tests C++ solutions against test cases
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+
+# Show help if no arguments
+if [ $# -eq 0 ]; then
+    echo -e "${CYAN}🏃 Competitive Programming Test Runner${NC}"
+    echo -e "${BLUE}======================================${NC}"
+    echo
+    echo -e "${YELLOW}Usage:${NC}"
+    echo -e "  ${GREEN}./run <filename>${NC}                    # Run tests for filename.cpp"
+    echo -e "  ${GREEN}./run <filename> -g -DDEBUG${NC}        # Run with additional compile flags"
+    echo
+    echo -e "${YELLOW}Examples:${NC}"
+    echo -e "  ${GREEN}./run 4A${NC}                          # Test 4A.cpp"
+    echo -e "  ${GREEN}./run two_sum -O0 -g${NC}              # Test two_sum.cpp with debug flags"
+    echo
+    echo -e "${YELLOW}Note:${NC} The script automatically finds .cpp files in any subfolder"
+    exit 1
+fi
+
+filename="$1"
+shift  # Remove filename from arguments, rest are compile flags
+
+# echo -e "${CYAN}🏃 Competitive Programming Test Runner${NC}"
+# echo -e "${BLUE}======================================${NC}"
+
+# Check if Python script exists
+PYTHON_SCRIPT="$SCRIPT_DIR/scripts/test_runner.py"
+
+# if [ ! -f "$PYTHON_SCRIPT" ]; then
+#     echo -e "${RED}❌ Error: Python script not found at $PYTHON_SCRIPT${NC}"
+#     exit 1
+# fi
+
+# # Check for required dependencies
+# echo -e "${YELLOW}🔍 Checking dependencies...${NC}"
+
+# # Check if g++ is available
+# if ! command -v g++ &> /dev/null; then
+#     echo -e "${RED}❌ Error: g++ compiler not found. Please install build-essential.${NC}"
+#     exit 1
+# fi
+
+# # Check if /usr/bin/time is available
+# if ! command -v /usr/bin/time &> /dev/null; then
+#     echo -e "${YELLOW}⚠️  Warning: /usr/bin/time not found. Memory usage won't be measured.${NC}"
+# fi
+
+# echo -e "${GREEN}✅ Dependencies checked${NC}"
+echo
+
+# Create necessary directories
+mkdir -p "$SCRIPT_DIR/io"
+
+# Run the Python test runner
+# echo -e "${BLUE}🚀 Starting test runner...${NC}"
+uv run python "$PYTHON_SCRIPT" "$filename" "$@"
+
+exit_code=$?
+
+# Final message based on exit code
+echo
+if [ $exit_code -eq 0 ]; then
+    echo -e "${GREEN}🎉 Test run completed!${NC}"
+else
+    echo -e "${RED}❌ Test run failed. Check the errors above.${NC}"
+fi
+
+exit $exit_code
