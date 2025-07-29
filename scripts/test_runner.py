@@ -161,8 +161,12 @@ def compile_cpp(cpp_filepath: str, extra_flags: Optional[List[str]] = None) -> C
     os.makedirs(out_dir, exist_ok=True)
     
     filename = os.path.splitext(os.path.basename(cpp_filepath))[0]
-    executable_path = os.path.join(out_dir, filename)
-    
+    # if os is not windows:
+    if sys.platform != "win32":
+        executable_path = os.path.join(out_dir, filename)
+    else:
+        executable_path = os.path.join(out_dir, filename + ".exe")
+
     # Base compilation flags
     flags = ["-std=c++17", "-O2", "-Wall", "-Wextra"]
     if extra_flags:
@@ -218,34 +222,49 @@ def run_test_case(executable_path: str, test_case: TestCase, workspace_root: str
         # Run the executable with time measurement
         start_time = time.time()
         
-        # Use /usr/bin/time for detailed metrics
-        time_cmd = ["/usr/bin/time", "-f", "%e %M", executable_path]
-        
-        with open(input_file, 'r') as stdin_file, open(output_file, 'w') as stdout_file:
-            result = subprocess.run(
-                time_cmd,
-                stdin=stdin_file,
-                stdout=stdout_file,
-                stderr=subprocess.PIPE,
-                text=True,
-                timeout=5  # 5 second timeout
-            )
-        
-        execution_time = time.time() - start_time
-        
-        # Parse time and memory from stderr
-        time_output = result.stderr.strip()
-        try:
-            parts = time_output.split()
-            if len(parts) >= 2:
-                exec_time_str = parts[0]
-                memory_kb = parts[1]
-                execution_time = float(exec_time_str)
-                memory_used = f"{memory_kb} KB"
-            else:
+        # Handle Windows vs Unix differently for time measurement
+        if sys.platform == "win32":
+            # On Windows, run executable directly
+            with open(input_file, 'r') as stdin_file, open(output_file, 'w') as stdout_file:
+                result = subprocess.run(
+                    [executable_path],
+                    stdin=stdin_file,
+                    stdout=stdout_file,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    timeout=5  # 5 second timeout
+                )
+            execution_time = time.time() - start_time
+            memory_used = "N/A"  # Memory measurement not available on Windows
+        else:
+            # Use /usr/bin/time for detailed metrics on Unix/Linux
+            time_cmd = ["/usr/bin/time", "-f", "%e %M", executable_path]
+            
+            with open(input_file, 'r') as stdin_file, open(output_file, 'w') as stdout_file:
+                result = subprocess.run(
+                    time_cmd,
+                    stdin=stdin_file,
+                    stdout=stdout_file,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    timeout=5  # 5 second timeout
+                )
+            
+            execution_time = time.time() - start_time
+            
+            # Parse time and memory from stderr
+            time_output = result.stderr.strip()
+            try:
+                parts = time_output.split()
+                if len(parts) >= 2:
+                    exec_time_str = parts[0]
+                    memory_kb = parts[1]
+                    execution_time = float(exec_time_str)
+                    memory_used = f"{memory_kb} KB"
+                else:
+                    memory_used = "N/A"
+            except:
                 memory_used = "N/A"
-        except:
-            memory_used = "N/A"
         
         # Read output
         with open(output_file, 'r') as f:

@@ -1,48 +1,44 @@
 {
-    "files.associations": {
-        "string": "cpp",
-        "iostream": "cpp",
-        "vector": "cpp",
-        "algorithm": "cpp"
-    },
-    "code-runner.executorMap": {
-        "cpp": "cd $dir && mkdir -p out && g++ -std=c++17 -O2 -Wall -Wextra $fileName -o out/$fileNameWithoutExt && echo 'Compilation successful. Running...' && echo '======================================' && /usr/bin/time -f '⏱️ Execution Time: %e seconds (%e000 ms)\\n💾 Memory Used: %M KB' $dir/out/$fileNameWithoutExt < $workspaceRoot/io/input.txt > $workspaceRoot/io/output.txt && echo '✅ Output written to io/output.txt' && echo '======================================'"
-    },
-    "code-runner.runInTerminal": false,
-    "code-runner.saveFileBeforeRun": true,
-    "code-runner.preserveFocus": false,
-    "code-runner.clearPreviousOutput": true,
-    "code-runner.showExecutionMessage": false,
-    "code-runner.ignoreSelection": false,
-    "code-runner.respectShebang": false,
-    "code-runner.enableAppInsights": false,
-    "files.autoSave": "afterDelay",
-    "files.autoSaveDelay": 1000,
-    "editor.formatOnSave": true,
-    "editor.tabSize": 4,
-    "editor.insertSpaces": true,
-    "C_Cpp.default.cppStandard": "c++17",
-    "C_Cpp.default.compilerArgs": [
-        "-std=c++17",
-        "-O2",
-        "-Wall",
-        "-Wextra"
-    ],
-    "files.exclude": {
-        "**/.svn": false,
-        "**/.hg": false,
-        "**/.DS_Store": false,
-        "**/Thumbs.db": false,
-        "**/node_modules": false,
-        "**/out": false,
-        "**/build": false,
-        "**/dist": false,
-        "**/.*": false,
-        "**/.*.*": false,
-        "**/scripts": false,
-        "**/attachments": false,
-        "**/pyproject.toml": false,
-        "**/uv.lock": false,
-        "**/setup.sh": false
-    }
+  "files.associations": {
+    "string": "cpp",
+    "iostream": "cpp",
+    "vector": "cpp",
+    "algorithm": "cpp"
+  },
+  "code-runner.executorMap": {
+    "cpp": "cd $dir && mkdir -p out && g++ -std=c++17 -O2 -Wall -Wextra $fileName -o out/$fileNameWithoutExt && echo 'Compilation successful. Running...' && echo '======================================' && /usr/bin/time -f '⏱️ Execution Time: %e seconds (%e000 ms)\\n💾 Memory Used: %M KB' $dir/out/$fileNameWithoutExt < $workspaceRoot/io/input.txt > $workspaceRoot/io/output.txt && echo '✅ Output written to io/output.txt' && echo '======================================'"
+  },
+  "code-runner.runInTerminal": false,
+  "code-runner.saveFileBeforeRun": true,
+  "code-runner.preserveFocus": false,
+  "code-runner.clearPreviousOutput": true,
+  "code-runner.showExecutionMessage": false,
+  "code-runner.ignoreSelection": false,
+  "code-runner.respectShebang": false,
+  "code-runner.enableAppInsights": false,
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  "editor.formatOnSave": true,
+  "editor.tabSize": 4,
+  "editor.insertSpaces": true,
+  "C_Cpp.default.cppStandard": "c++17",
+  "C_Cpp.default.compilerArgs": ["-std=c++17", "-O2", "-Wall", "-Wextra"],
+  "files.exclude": {
+    "**/.svn": false,
+    "**/.hg": false,
+    "**/.DS_Store": false,
+    "**/Thumbs.db": false,
+    "**/node_modules": false,
+    "**/out": false,
+    "**/build": false,
+    "**/dist": false,
+    "**/.*": false,
+    "**/.*.*": false,
+    "**/scripts": false,
+    "**/attachments": false,
+    "**/pyproject.toml": false,
+    "**/uv.lock": false,
+    "**/setup.sh": false,
+    "**/setup.ps1": false
+  }
 }

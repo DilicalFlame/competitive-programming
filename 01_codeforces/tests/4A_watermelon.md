@@ -17,4 +17,5 @@ YES
 ```
 
 ## Notes
+
 I forgot to think about the edge case where input can be 2 and made the wrong submission.

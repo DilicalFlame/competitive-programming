@@ -46,7 +46,7 @@ The setup will:
 
 ## 📁 Project Structure
 
-```
+```folder-structure
 cp/
 ├── create                  # Interactive file generator (Linux/macOS)
 ├── create.ps1              # Interactive file generator (PowerShell)
