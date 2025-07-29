@@ -15,19 +15,31 @@ A powerful, automated workspace for competitive programming with support for **C
 
 ## 🛠️ Setup
 
+### Linux/macOS
+
 Run the setup script to install dependencies and configure the workspace:
 
 ```bash
 ./setup.sh
 ```
 
-This will:
+### Windows
 
-- Install `uv` package manager (if not already installed)
+For Windows users, run the PowerShell setup script:
+
+```powershell
+.\setup.ps1
+```
+
+Or if you prefer using CMD, first ensure you have uv installed, then manually create the directories.
+
+The setup will:
+
+- Check for `uv` package manager (install manually if not found)
 - Initialize a Python virtual environment with uv
 - Install required Python packages (`rich`, `inquirer`) using uv
 - Create necessary directories
-- Make scripts executable
+- Make scripts executable (Linux/macOS only)
 - Verify system dependencies (g++, uv)
 
 > **Note**: This workspace uses `uv` for Python package management, which provides faster dependency resolution and isolated environments.
@@ -36,9 +48,14 @@ This will:
 
 ```
 cp/
-├── create                  # Interactive file generator
-├── run                     # Test runner
-├── setup.sh                # Setup script
+├── create                  # Interactive file generator (Linux/macOS)
+├── create.ps1              # Interactive file generator (PowerShell)
+├── create.cmd              # Interactive file generator (CMD)
+├── run                     # Test runner (Linux/macOS)
+├── run.ps1                 # Test runner (PowerShell)
+├── run.cmd                 # Test runner (CMD)
+├── setup.sh                # Setup script (Linux/macOS)
+├── setup.ps1               # Setup script (PowerShell)
 ├── 01_codeforces/          # Codeforces problems
 │   ├── tests/              # Test cases in markdown
 │   └── *.cpp               # Solution files
@@ -57,8 +74,22 @@ cp/
 
 Use the interactive file generator:
 
+**Linux/macOS:**
+
 ```bash
 ./create
+```
+
+**Windows PowerShell:**
+
+```powershell
+.\create.ps1
+```
+
+**Windows CMD:**
+
+```cmd
+create.cmd
 ```
 
 The script will guide you through:
@@ -92,19 +123,55 @@ The script will guide you through:
 
 ### Running Tests
 
+### Testing Solutions
+
 Execute tests for any problem:
+
+**Linux/macOS:**
 
 ```bash
 ./run <filename>           # Basic testing
 ./run <filename> -g -O0    # With additional compile flags
 ```
 
+**Windows PowerShell:**
+
+```powershell
+.\run.ps1 <filename>           # Basic testing
+.\run.ps1 <filename> -g -O0    # With additional compile flags
+```
+
+**Windows CMD:**
+
+```cmd
+run.cmd <filename>           # Basic testing
+run.cmd <filename> -g -O0    # With additional compile flags
+```
+
 #### Examples
+
+**Linux/macOS:**
 
 ```bash
 ./run 4A_watermelon          # Test 4A.cpp
 ./run 1_two-sum              # Test two_sum.cpp
 ./run problem_name -DDEBUG   # Test with debug flag
+```
+
+**Windows PowerShell:**
+
+```powershell
+.\run.ps1 4A_watermelon          # Test 4A.cpp
+.\run.ps1 1_two-sum              # Test two_sum.cpp
+.\run.ps1 problem_name -DDEBUG   # Test with debug flag
+```
+
+**Windows CMD:**
+
+```cmd
+run.cmd 4A_watermelon          # Test 4A.cpp
+run.cmd 1_two-sum              # Test two_sum.cpp
+run.cmd problem_name -DDEBUG   # Test with debug flag
 ```
 
 ## 📝 Test Case Format

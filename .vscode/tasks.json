@@ -1,88 +1,214 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "type": "shell",
-            "label": "C++: Build (to platform out folder)",
-            "command": "mkdir -p '${fileDirname}/out' && g++ -std=c++17 -O2 -Wall -Wextra '${file}' -o '${fileDirname}/out/${fileBasenameNoExtension}'",
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "detail": "Compile C++ file with executable in platform-specific out folder"
-        },
-        {
-            "type": "shell",
-            "label": "CP: Run Tests",
-            "command": "./run '${fileBasenameNoExtension}'",
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "group": {
-                "kind": "test",
-                "isDefault": true
-            },
-            "detail": "Run all test cases for current C++ file",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": false,
-                "clear": true
-            }
-        },
-        {
-            "type": "shell",
-            "label": "CP: Create New Problem",
-            "command": "./create",
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "group": "build",
-            "detail": "Create new competitive programming problem files",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "showReuseMessage": false,
-                "clear": true
-            }
-        },
-        {
-            "type": "shell",
-            "label": "CP: Run Tests with Debug",
-            "command": "./run '${fileBasenameNoExtension}' -g -DDEBUG",
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "group": "test",
-            "detail": "Run tests with debug compilation flags",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": false,
-                "clear": true
-            }
-        },
-        {
-            "type": "shell",
-            "label": "Python: Run Tests (Legacy)",
-            "command": "uv run python scripts/test_runner.py '${fileBasenameNoExtension}'",
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "group": "test",
-            "detail": "Run all test cases with uv and Python test runner (legacy)"
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "C++: Build (to platform out folder)",
+      "command": "mkdir -p '${fileDirname}/out' && g++ -std=c++17 -O2 -Wall -Wextra '${file}' -o '${fileDirname}/out/${fileBasenameNoExtension}'",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": ["$gcc"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "detail": "Compile C++ file with executable in platform-specific out folder"
+    },
+    {
+      "type": "shell",
+      "label": "CP: Run Tests",
+      "command": "./run '${fileBasenameNoExtension}'",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "detail": "Run all test cases for current C++ file",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "type": "shell",
+      "label": "CP: Create New Problem",
+      "command": "./create",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "detail": "Create new competitive programming problem files",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "type": "shell",
+      "label": "CP: Run Tests with Debug",
+      "command": "./run '${fileBasenameNoExtension}' -g -DDEBUG",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "detail": "Run tests with debug compilation flags",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "type": "shell",
+      "label": "Python: Run Tests (Legacy)",
+      "command": "uv run python scripts/test_runner.py '${fileBasenameNoExtension}'",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "detail": "Run all test cases with uv and Python test runner (legacy)"
+    },
+    {
+      "type": "shell",
+      "label": "Windows: C++: Build (to platform out folder)",
+      "windows": {
+        "command": "if not exist \"${fileDirname}\\out\" mkdir \"${fileDirname}\\out\" && g++ -std=c++17 -O2 -Wall -Wextra \"${file}\" -o \"${fileDirname}\\out\\${fileBasenameNoExtension}.exe\""
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": ["$gcc"],
+      "group": "build",
+      "detail": "Compile C++ file with executable in platform-specific out folder (Windows)"
+    },
+    {
+      "type": "shell",
+      "label": "Windows: CP: Run Tests (PowerShell)",
+      "windows": {
+        "command": ".\\run.ps1 '${fileBasenameNoExtension}'"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "shell": {
+          "executable": "powershell.exe"
         }
-    ]
+      },
+      "group": "test",
+      "detail": "Run all test cases for current C++ file (Windows PowerShell)",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "type": "shell",
+      "label": "Windows: CP: Run Tests (CMD)",
+      "windows": {
+        "command": "run.cmd \"${fileBasenameNoExtension}\""
+      },
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "shell": {
+          "executable": "cmd.exe"
+        }
+      },
+      "group": "test",
+      "detail": "Run all test cases for current C++ file (Windows CMD)",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "type": "shell",
+      "label": "Windows: CP: Create New Problem (PowerShell)",
+      "windows": {
+        "command": ".\\create.ps1"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "shell": {
+          "executable": "powershell.exe"
+        }
+      },
+      "group": "build",
+      "detail": "Create new competitive programming problem files (Windows PowerShell)",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "type": "shell",
+      "label": "Windows: CP: Create New Problem (CMD)",
+      "windows": {
+        "command": "create.cmd"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "shell": {
+          "executable": "cmd.exe"
+        }
+      },
+      "group": "build",
+      "detail": "Create new competitive programming problem files (Windows CMD)",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "type": "shell",
+      "label": "Windows: CP: Run Tests with Debug (PowerShell)",
+      "windows": {
+        "command": ".\\run.ps1 '${fileBasenameNoExtension}' -g -DDEBUG"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "shell": {
+          "executable": "powershell.exe"
+        }
+      },
+      "group": "test",
+      "detail": "Run tests with debug compilation flags (Windows PowerShell)",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    }
+  ]
 }
