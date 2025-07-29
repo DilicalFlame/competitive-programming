@@ -8,9 +8,6 @@ REM Get script directory
 set "SCRIPT_DIR=%~dp0"
 if "%SCRIPT_DIR:~-1%"=="\" set "SCRIPT_DIR=%SCRIPT_DIR:~0,-1%"
 
-echo 🚀 Competitive Programming File Generator
-echo ==========================================
-
 REM Check if Python script exists
 set "PYTHON_SCRIPT=%SCRIPT_DIR%\scripts\file_generator.py"
 
@@ -18,16 +15,6 @@ if not exist "%PYTHON_SCRIPT%" (
     echo ❌ Error: Python script not found at %PYTHON_SCRIPT%
     exit /b 1
 )
-
-REM Check for required Python packages and install if missing
-echo 🔍 Checking dependencies...
-
-REM Function to check and install packages
-call :install_if_missing "rich"
-call :install_if_missing "inquirer"
-
-echo ✅ Dependencies checked
-echo.
 
 REM Run the Python script
 uv run python "%PYTHON_SCRIPT%" %*

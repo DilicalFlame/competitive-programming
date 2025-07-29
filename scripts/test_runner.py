@@ -14,6 +14,91 @@ from pathlib import Path
 from typing import List, Optional
 from dataclasses import dataclass
 
+# Try to import rich for beautiful output, fallback to simple colors
+try:
+    from rich.console import Console
+    from rich.panel import Panel
+    from rich.text import Text
+    from rich.table import Table
+    from rich.columns import Columns
+    from rich.align import Align
+    RICH_AVAILABLE = True
+    console = Console()
+except ImportError:
+    RICH_AVAILABLE = False
+    console = None
+
+# Color utility class for beautiful terminal output
+class Colors:
+    """ANSI color codes for terminal output"""
+    # Basic colors
+    BLACK = '\033[30m'
+    RED = '\033[31m'
+    GREEN = '\033[32m'
+    YELLOW = '\033[33m'
+    BLUE = '\033[34m'
+    MAGENTA = '\033[35m'
+    CYAN = '\033[36m'
+    WHITE = '\033[37m'
+    
+    # Bright colors
+    BRIGHT_BLACK = '\033[90m'
+    BRIGHT_RED = '\033[91m'
+    BRIGHT_GREEN = '\033[92m'
+    BRIGHT_YELLOW = '\033[93m'
+    BRIGHT_BLUE = '\033[94m'
+    BRIGHT_MAGENTA = '\033[95m'
+    BRIGHT_CYAN = '\033[96m'
+    BRIGHT_WHITE = '\033[97m'
+    
+    # Background colors
+    BG_BLACK = '\033[40m'
+    BG_RED = '\033[41m'
+    BG_GREEN = '\033[42m'
+    BG_YELLOW = '\033[43m'
+    BG_BLUE = '\033[44m'
+    BG_MAGENTA = '\033[45m'
+    BG_CYAN = '\033[46m'
+    BG_WHITE = '\033[47m'
+    
+    # Styles
+    RESET = '\033[0m'
+    BOLD = '\033[1m'
+    DIM = '\033[2m'
+    ITALIC = '\033[3m'
+    UNDERLINE = '\033[4m'
+    BLINK = '\033[5m'
+    REVERSE = '\033[7m'
+    STRIKETHROUGH = '\033[9m'
+
+def colored_print(text: str, color: str = Colors.WHITE, style: str = "", end: str = "\n"):
+    """Print colored text to terminal"""
+    print(f"{style}{color}{text}{Colors.RESET}", end=end)
+
+def success(text: str, end: str = "\n"):
+    """Print success message in green"""
+    colored_print(text, Colors.BRIGHT_GREEN, Colors.BOLD, end)
+
+def error(text: str, end: str = "\n"):
+    """Print error message in red"""
+    colored_print(text, Colors.BRIGHT_RED, Colors.BOLD, end)
+
+def warning(text: str, end: str = "\n"):
+    """Print warning message in yellow"""
+    colored_print(text, Colors.BRIGHT_YELLOW, Colors.BOLD, end)
+
+def info(text: str, end: str = "\n"):
+    """Print info message in cyan"""
+    colored_print(text, Colors.BRIGHT_CYAN, end=end)
+
+def highlight(text: str, end: str = "\n"):
+    """Print highlighted text in bright white"""
+    colored_print(text, Colors.BRIGHT_WHITE, Colors.BOLD, end)
+
+def dim_text(text: str, end: str = "\n"):
+    """Print dimmed text"""
+    colored_print(text, Colors.BRIGHT_BLACK, end=end)
+
 @dataclass
 class TestCase:
     input_data: str
@@ -41,8 +126,8 @@ class Platform:
     HACKERRANK = "HackerRank"
 
 def print_header():
-    print("🏃 Competitive Programming Test Runner")
-    print("=" * 50)
+    colored_print("🏃 Competitive Programming Test Runner", Colors.BRIGHT_CYAN, Colors.BOLD)
+    colored_print("=" * 50, Colors.BRIGHT_BLUE)
 
 def find_cpp_file(filename: str, workspace_root: str) -> Optional[str]:
     """Find C++ file in any subfolder"""
@@ -149,7 +234,7 @@ def parse_test_cases(test_filepath: str, platform: str) -> List[TestCase]:
                             test_cases.append(TestCase(input_data, expected_output, i + 1))
     
     except Exception as e:
-        print(f"Error parsing test cases: {str(e)}")
+        error(f"Error parsing test cases: {str(e)}")
     
     return test_cases
 
@@ -510,49 +595,171 @@ int main() {{
     return temp_file
 
 def display_results(results: List[TestResult], compilation_time: float = 0.0):
-    """Display test results"""
+    """Display test results with beautiful Rich panels and tables"""
     if not results:
-        print("⚠️  No test cases found!")
+        if RICH_AVAILABLE:
+            console.print(Panel("⚠️  No test cases found!", title="Warning", border_style="yellow"))
+        else:
+            warning("⚠️  No test cases found!")
         return
     
     passed_tests = sum(1 for r in results if r.passed)
     total_tests = len(results)
     
-    print(f"\n📊 Test Results: {passed_tests}/{total_tests} passed")
-    print("=" * 70)
-    
-    # Show each test result
-    for result in results:
-        status = "✅ PASS" if result.passed else "❌ FAIL"
-        print(f"Test #{result.test_case.test_number}: {status} ({result.execution_time:.3f}s, {result.memory_used})")
+    # Debug: Check if Rich is available
+    if RICH_AVAILABLE:
         
-        if not result.passed:
-            print(f"  Input: {repr(result.test_case.input_data)}")
-            print(f"  Expected: {repr(result.test_case.expected_output)}")
-            print(f"  Actual: {repr(result.actual_output)}")
-            print()
-    
-    # Performance summary
-    if results:
+        # Create a beautiful table for test results
+        table = Table(show_header=True, header_style="bold magenta", border_style="bright_blue")
+        table.add_column("Test", style="cyan", width=8)
+        table.add_column("Status", style="bold", width=12)
+        table.add_column("Time", style="yellow", width=10)
+        table.add_column("Memory", style="green", width=10)
+        table.add_column("Details", style="dim", width=40)
+        
+        # Add test results to table
+        for result in results:
+            if result.passed:
+                status = "[bold green]✅ PASS[/bold green]"
+                details = "[dim]All good![/dim]"
+            else:
+                status = "[bold red]❌ FAIL[/bold red]"
+                details = f"[dim]Input: {repr(result.test_case.input_data)[:30]}...[/dim]"
+            
+            table.add_row(
+                f"#{result.test_case.test_number}",
+                status,
+                f"{result.execution_time:.3f}s",
+                result.memory_used,
+                details
+            )
+        
+        # Create performance summary
         avg_time = sum(r.execution_time for r in results) / len(results)
         max_time = max(r.execution_time for r in results)
         
-        print(f"⏱️  Performance: Avg {avg_time:.3f}s | Max {max_time:.3f}s", end="")
+        perf_text = Text()
+        perf_text.append("⏱️  Performance: ", style="cyan")
+        perf_text.append(f"Avg {avg_time:.3f}s", style="yellow")
+        perf_text.append(" | ", style="white")
+        perf_text.append(f"Max {max_time:.3f}s", style="yellow")
         if compilation_time > 0:
-            print(f" | Compilation {compilation_time:.3f}s")
+            perf_text.append(" | ", style="white")
+            perf_text.append(f"Compilation {compilation_time:.3f}s", style="magenta")
+        
+        # Create summary text
+        if passed_tests == total_tests:
+            summary_style = "bold green"
+            panel_style = "green"
+            title_emoji = "✅"
+        elif passed_tests > 0:
+            summary_style = "bold yellow"
+            panel_style = "yellow"
+            title_emoji = "⚠️"
         else:
-            print()
+            summary_style = "bold red"
+            panel_style = "red"
+            title_emoji = "❌"
+        
+        # Create the main summary panel
+        summary_text = Text()
+        summary_text.append(f"📊 Test Results: {passed_tests}/{total_tests} passed", style=summary_style)
+        
+        print()
+        console.print(Panel(
+            Align.center(summary_text),
+            title=f"{title_emoji} TEST RESULTS",
+            border_style=panel_style,
+            padding=(1, 2)
+        ))
+        
+        # Print the detailed table
+        console.print(table)
+        
+        # Print performance summary in a separate panel
+        console.print(Panel(
+            Align.center(perf_text),
+            title="⏱️  PERFORMANCE",
+            border_style="cyan",
+            padding=(0, 1)
+        ))
+        
+        # Show failure details if any
+        failures = [r for r in results if not r.passed]
+        if failures:
+            failure_content = Text()
+            for i, result in enumerate(failures):
+                if i > 0:
+                    failure_content.append("\n\n")
+                failure_content.append(f"Test #{result.test_case.test_number}:\n", style="bold red")
+                failure_content.append(f"  Input: {repr(result.test_case.input_data)}\n", style="yellow")
+                failure_content.append(f"  Expected: {repr(result.test_case.expected_output)}\n", style="green")
+                failure_content.append(f"  Actual: {repr(result.actual_output)}", style="red")
+            
+            console.print(Panel(
+                failure_content,
+                title="❌ FAILURE DETAILS",
+                border_style="red",
+                padding=(1, 2)
+            ))
+    
+    else:
+        # Fallback to the original colored output for when Rich is not available
+        print()
+        if passed_tests == total_tests:
+            success(f"📊 Test Results: {passed_tests}/{total_tests} passed")
+        elif passed_tests > 0:
+            warning(f"📊 Test Results: {passed_tests}/{total_tests} passed")
+        else:
+            error(f"📊 Test Results: {passed_tests}/{total_tests} passed")
+        
+        colored_print("=" * 70, Colors.BRIGHT_BLUE)
+        
+        # Show each test result with colors
+        for result in results:
+            if result.passed:
+                colored_print(f"Test #{result.test_case.test_number}: ", Colors.WHITE, end="")
+                success(f"✅ PASS ", end="")
+                dim_text(f"({result.execution_time:.3f}s, {result.memory_used})")
+            else:
+                colored_print(f"Test #{result.test_case.test_number}: ", Colors.WHITE, end="")
+                error(f"❌ FAIL ", end="")
+                dim_text(f"({result.execution_time:.3f}s, {result.memory_used})")
+                
+                # Show failure details with indentation and colors
+                colored_print("  Input: ", Colors.BRIGHT_YELLOW, end="")
+                colored_print(repr(result.test_case.input_data), Colors.WHITE)
+                colored_print("  Expected: ", Colors.BRIGHT_GREEN, end="")
+                colored_print(repr(result.test_case.expected_output), Colors.WHITE)
+                colored_print("  Actual: ", Colors.BRIGHT_RED, end="")
+                colored_print(repr(result.actual_output), Colors.WHITE)
+                print()
+        
+        # Performance summary with colors
+        if results:
+            avg_time = sum(r.execution_time for r in results) / len(results)
+            max_time = max(r.execution_time for r in results)
+            
+            info("⏱️  Performance: ", end="")
+            colored_print(f"Avg {avg_time:.3f}s", Colors.CYAN, end="")
+            colored_print(" | ", Colors.WHITE, end="")
+            colored_print(f"Max {max_time:.3f}s", Colors.CYAN, end="")
+            if compilation_time > 0:
+                colored_print(" | ", Colors.WHITE, end="")
+                colored_print(f"Compilation {compilation_time:.3f}s", Colors.MAGENTA)
+            else:
+                print()
 
 def main():
     """Main function"""
     if len(sys.argv) < 2:
-        print("Usage: python3 test_runner.py <filename> [compile_flags...]")
+        error("Usage: python3 test_runner.py <filename> [compile_flags...]")
         sys.exit(1)
     
     filename = sys.argv[1]
     extra_flags = sys.argv[2:] if len(sys.argv) > 2 else []
     
-    print_header()
+    # print_header()
     
     # Find workspace root
     workspace_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -560,28 +767,39 @@ def main():
     # Find C++ file
     cpp_filepath = find_cpp_file(filename, workspace_root)
     if not cpp_filepath:
-        print(f"❌ C++ file '{filename}.cpp' not found in workspace!")
+        error(f"❌ C++ file '{filename}.cpp' not found in workspace!")
         sys.exit(1)
     
     # Detect platform
     platform = detect_platform(cpp_filepath)
     
-    print(f"📂 Found: {cpp_filepath}")
-    print(f"🏷️  Platform: {platform}")
+    info(f"📂 Found: {cpp_filepath}")
+    
+    # Color-code platform based on type
+    if platform == Platform.CODEFORCES:
+        colored_print(f"🏷️  Platform: {platform}", Colors.BRIGHT_BLUE, Colors.BOLD)
+    elif platform == Platform.LEETCODE:
+        colored_print(f"🏷️  Platform: {platform}", Colors.BRIGHT_YELLOW, Colors.BOLD)
+    elif platform == Platform.ATCODER:
+        colored_print(f"🏷️  Platform: {platform}", Colors.BRIGHT_GREEN, Colors.BOLD)
+    elif platform == Platform.HACKERRANK:
+        colored_print(f"🏷️  Platform: {platform}", Colors.BRIGHT_MAGENTA, Colors.BOLD)
+    else:
+        highlight(f"🏷️  Platform: {platform}")
     
     # Find test file
     test_filepath = find_test_file(cpp_filepath)
     if not test_filepath:
-        print(f"⚠️  No test file found for {filename}")
+        warning(f"⚠️  No test file found for {filename}")
         sys.exit(1)
     
     # Parse test cases
     test_cases = parse_test_cases(test_filepath, platform)
     if not test_cases:
-        print(f"⚠️  No test cases found in {test_filepath}")
+        warning(f"⚠️  No test cases found in {test_filepath}")
         sys.exit(1)
     
-    print(f"📝 Found {len(test_cases)} test cases")
+    # info(f"📝 Found {len(test_cases)} test cases")
     
     # Handle LeetCode differently
     temp_cpp = None
@@ -593,32 +811,40 @@ def main():
         compile_filepath = cpp_filepath
     
     # Compile
-    print("🔨 Compiling...")
+    # colored_print("🔨 Compiling...", Colors.YELLOW)
     start_compile = time.time()
     compilation_result = compile_cpp(compile_filepath, extra_flags)
     compile_time = time.time() - start_compile
     
     if not compilation_result.success:
-        print("❌ Compilation failed!")
-        print("Compilation Error:")
-        print(compilation_result.error_message)
+        error("❌ Compilation failed!")
+        error("Compilation Error:")
+        colored_print(compilation_result.error_message, Colors.RED)
         sys.exit(1)
     
-    print(f"✅ Compilation successful! ({compile_time:.3f}s)")
+    # success(f"✅ Compilation successful! ({compile_time:.3f}s)")
     
     # Run tests
-    print("🧪 Running tests...")
+    colored_print("\n🧪 Running tests...", Colors.BLUE)
     results = []
     
     for i, test_case in enumerate(test_cases, 1):
-        print(f"  Running test {i}/{len(test_cases)}...", end=" ")
+        colored_print(f"  Running test {i}/{len(test_cases)}...", Colors.WHITE, end=" ")
         result = run_test_case(compilation_result.executable_path, test_case, workspace_root, platform)
         results.append(result)
-        status = "✅" if result.passed else "❌"
-        print(f"{status} ({result.execution_time:.3f}s)")
+        if result.passed:
+            success(f"✅ ({result.execution_time:.3f}s)", end="")
+        else:
+            error(f"❌ ({result.execution_time:.3f}s)", end="")
+        print()
     
     # Display results
     display_results(results, compile_time)
+    
+    # Print completion message
+    print()
+    colored_print("🎉 Test run completed!", Colors.BRIGHT_GREEN, Colors.BOLD)
+    colored_print("---", Colors.BRIGHT_BLACK)
     
     # Clean up temporary files for LeetCode
     if platform == Platform.LEETCODE and temp_cpp is not None:

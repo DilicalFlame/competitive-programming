@@ -24,6 +24,54 @@ except ImportError:
     RICH_AVAILABLE = False
     console = None
 
+# Color utility class for beautiful terminal output (fallback when Rich is not available)
+class Colors:
+    """ANSI color codes for terminal output"""
+    # Basic colors
+    BLACK = '\033[30m'
+    RED = '\033[31m'
+    GREEN = '\033[32m'
+    YELLOW = '\033[33m'
+    BLUE = '\033[34m'
+    MAGENTA = '\033[35m'
+    CYAN = '\033[36m'
+    WHITE = '\033[37m'
+    
+    # Bright colors
+    BRIGHT_BLACK = '\033[90m'
+    BRIGHT_RED = '\033[91m'
+    BRIGHT_GREEN = '\033[92m'
+    BRIGHT_YELLOW = '\033[93m'
+    BRIGHT_BLUE = '\033[94m'
+    BRIGHT_MAGENTA = '\033[95m'
+    BRIGHT_CYAN = '\033[96m'
+    BRIGHT_WHITE = '\033[97m'
+    
+    # Styles
+    RESET = '\033[0m'
+    BOLD = '\033[1m'
+    DIM = '\033[2m'
+
+def colored_print(text: str, color: str = Colors.WHITE, style: str = "", end: str = "\n"):
+    """Print colored text to terminal"""
+    print(f"{style}{color}{text}{Colors.RESET}", end=end)
+
+def success(text: str, end: str = "\n"):
+    """Print success message in green"""
+    colored_print(text, Colors.BRIGHT_GREEN, Colors.BOLD, end)
+
+def error(text: str, end: str = "\n"):
+    """Print error message in red"""
+    colored_print(text, Colors.BRIGHT_RED, Colors.BOLD, end)
+
+def warning(text: str, end: str = "\n"):
+    """Print warning message in yellow"""
+    colored_print(text, Colors.BRIGHT_YELLOW, Colors.BOLD, end)
+
+def info(text: str, end: str = "\n"):
+    """Print info message in cyan"""
+    colored_print(text, Colors.BRIGHT_CYAN, end=end)
+
 # Try to import inquirer for interactive selection
 try:
     import inquirer
@@ -58,8 +106,8 @@ def print_header():
         header = Text("🚀 Competitive Programming File Generator", style="bold blue")
         console.print(Panel(Align.center(header), border_style="bright_blue"))
     else:
-        print("🚀 Competitive Programming File Generator")
-        print("=" * 50)
+        colored_print("🚀 Competitive Programming File Generator", Colors.BRIGHT_CYAN, Colors.BOLD)
+        colored_print("=" * 50, Colors.BRIGHT_BLUE)
 
 def select_platform() -> Platform:
     """Interactive platform selection"""
@@ -95,25 +143,37 @@ def select_platform() -> Platform:
                     pass
                 console.print("[red]Invalid choice! Please enter 1-4[/red]")
         else:
-            print("\nAvailable Platforms:")
+            colored_print("\nAvailable Platforms:", Colors.BRIGHT_CYAN, Colors.BOLD)
             for i, platform in enumerate(Platform, 1):
-                print(f"{i}. {platform.display_name}")
+                colored_print(f"{i}. ", Colors.BRIGHT_WHITE, end="")
+                
+                # Color-code platforms
+                if platform == Platform.CODEFORCES:
+                    colored_print(platform.display_name, Colors.BRIGHT_BLUE, Colors.BOLD)
+                elif platform == Platform.LEETCODE:
+                    colored_print(platform.display_name, Colors.BRIGHT_YELLOW, Colors.BOLD)
+                elif platform == Platform.ATCODER:
+                    colored_print(platform.display_name, Colors.BRIGHT_GREEN, Colors.BOLD)
+                elif platform == Platform.HACKERRANK:
+                    colored_print(platform.display_name, Colors.BRIGHT_MAGENTA, Colors.BOLD)
             
             while True:
                 try:
-                    choice = int(input("Select platform (1-4): "))
+                    colored_print("Select platform (1-4): ", Colors.WHITE, end="")
+                    choice = int(input())
                     if 1 <= choice <= len(Platform):
                         return list(Platform)[choice - 1]
-                    print("Invalid choice! Please enter 1-4")
+                    error("Invalid choice! Please enter 1-4")
                 except ValueError:
-                    print("Invalid input! Please enter a number")
+                    error("Invalid input! Please enter a number")
 
 def get_filename(platform: Platform) -> str:
     """Get filename from user"""
     if RICH_AVAILABLE:
         filename = Prompt.ask(f"Enter filename (without .cpp extension)")
     else:
-        filename = input(f"Enter filename (without .cpp extension): ")
+        colored_print(f"Enter filename (without .cpp extension): ", Colors.BRIGHT_CYAN, end="")
+        filename = input()
     
     return filename.strip()
 
@@ -124,9 +184,12 @@ def get_leetcode_details() -> tuple[str, str, str]:
         return_type = Prompt.ask("Enter return type", default="int")
         parameters = Prompt.ask("Enter parameters (e.g., 'vector<int>& nums, int target')", default="")
     else:
-        method_name = input("Enter method name (default: solution): ").strip() or "solution"
-        return_type = input("Enter return type (default: int): ").strip() or "int"
-        parameters = input("Enter parameters (e.g., 'vector<int>& nums, int target'): ").strip()
+        colored_print("Enter method name (default: solution): ", Colors.BRIGHT_CYAN, end="")
+        method_name = input().strip() or "solution"
+        colored_print("Enter return type (default: int): ", Colors.BRIGHT_CYAN, end="")
+        return_type = input().strip() or "int"
+        colored_print("Enter parameters (e.g., 'vector<int>& nums, int target'): ", Colors.BRIGHT_CYAN, end="")
+        parameters = input().strip()
     
     return method_name, return_type, parameters
 
@@ -304,13 +367,15 @@ def create_files(config: FileConfig) -> None:
         if RICH_AVAILABLE:
             overwrite = Confirm.ask(f"Files already exist for {config.filename}. Overwrite?", default=False)
         else:
-            overwrite = input(f"Files already exist for {config.filename}. Overwrite? (y/N): ").lower().startswith('y')
+            warning(f"Files already exist for {config.filename}.")
+            colored_print("Overwrite? (y/N): ", Colors.BRIGHT_YELLOW, end="")
+            overwrite = input().lower().startswith('y')
         
         if not overwrite:
             if RICH_AVAILABLE:
                 console.print("[yellow]Operation cancelled.[/yellow]")
             else:
-                print("Operation cancelled.")
+                warning("Operation cancelled.")
             return
     
     # Create C++ file
@@ -332,9 +397,10 @@ def create_files(config: FileConfig) -> None:
         )
         console.print(success_panel)
     else:
-        print(f"\n✅ Files created successfully!")
-        print(f"📁 C++ File: {cpp_filepath}")
-        print(f"📝 Test File: {test_filepath}")
+        print()
+        success(f"✅ Files created successfully!")
+        info(f"📁 C++ File: {cpp_filepath}")
+        info(f"📝 Test File: {test_filepath}")
 
 def main():
     """Main function"""
@@ -350,7 +416,7 @@ def main():
             if RICH_AVAILABLE:
                 console.print("[red]Filename cannot be empty![/red]")
             else:
-                print("Error: Filename cannot be empty!")
+                error("Filename cannot be empty!")
             return
         
         # Create config
@@ -370,12 +436,13 @@ def main():
         if RICH_AVAILABLE:
             console.print("\n[yellow]Operation cancelled by user.[/yellow]")
         else:
-            print("\nOperation cancelled by user.")
+            print()
+            warning("Operation cancelled by user.")
     except Exception as e:
         if RICH_AVAILABLE:
             console.print(f"[red]Error: {str(e)}[/red]")
         else:
-            print(f"Error: {str(e)}")
+            error(f"Error: {str(e)}")
 
 if __name__ == "__main__":
     main()

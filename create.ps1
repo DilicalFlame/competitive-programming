@@ -18,42 +18,42 @@ function Write-ColorOutput {
     Write-Host $Message -ForegroundColor $Color
 }
 
-Write-ColorOutput "🚀 Competitive Programming File Generator" "Cyan"
-Write-ColorOutput "==========================================" "Blue"
+# Write-ColorOutput "🚀 Competitive Programming File Generator" "Cyan"
+# Write-ColorOutput "==========================================" "Blue"
 
 # Check if Python script exists
 $PythonScript = Join-Path $ScriptDir "scripts\file_generator.py"
 
-if (-not (Test-Path $PythonScript)) {
-    Write-ColorOutput "❌ Error: Python script not found at $PythonScript" "Red"
-    exit 1
-}
+# if (-not (Test-Path $PythonScript)) {
+#     Write-ColorOutput "❌ Error: Python script not found at $PythonScript" "Red"
+#     exit 1
+# }
 
 # Check for required Python packages and install if missing
-Write-ColorOutput "🔍 Checking dependencies..." "Yellow"
+# Write-ColorOutput "🔍 Checking dependencies..." "Yellow"
 
 # Function to install packages if not available
-function Install-IfMissing {
-    param([string]$Package)
+# function Install-IfMissing {
+#     param([string]$Package)
     
-    $checkCmd = "uv run python -c `"import $Package`" 2>$null"
-    $result = Invoke-Expression $checkCmd
+#     $checkCmd = "uv run python -c `"import $Package`" 2>$null"
+#     $result = Invoke-Expression $checkCmd
     
-    if ($LASTEXITCODE -ne 0) {
-        Write-ColorOutput "📦 Installing $Package..." "Yellow"
-        $installResult = & uv add $Package 2>$null
-        if ($LASTEXITCODE -ne 0) {
-            Write-ColorOutput "⚠️  Could not install $Package automatically. Falling back to basic UI." "Yellow"
-        }
-    }
-}
+#     if ($LASTEXITCODE -ne 0) {
+#         Write-ColorOutput "📦 Installing $Package..." "Yellow"
+#         $installResult = & uv add $Package 2>$null
+#         if ($LASTEXITCODE -ne 0) {
+#             Write-ColorOutput "⚠️  Could not install $Package automatically. Falling back to basic UI." "Yellow"
+#         }
+#     }
+# }
 
 # Try to install optional packages for better UI
-Install-IfMissing "rich"
-Install-IfMissing "inquirer"
+# Install-IfMissing "rich"
+# Install-IfMissing "inquirer"
 
-Write-ColorOutput "✅ Dependencies checked" "Green"
-Write-Host
+# Write-ColorOutput "✅ Dependencies checked" "Green"
+# Write-Host
 
 # Run the Python script
 $allArgs = @($PythonScript) + $RemainingArgs

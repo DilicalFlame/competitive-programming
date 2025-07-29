@@ -54,13 +54,4 @@ if "%compile_flags%"=="" (
 )
 
 set "exit_code=%errorlevel%"
-
-REM Final message based on exit code
-echo.
-if %exit_code% equ 0 (
-    echo 🎉 Test run completed!
-) else (
-    echo ❌ Test run failed. Check the errors above.
-)
-
 exit /b %exit_code%
