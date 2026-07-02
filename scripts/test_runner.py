@@ -577,6 +577,7 @@ def create_leetcode_test_runner(cpp_filepath: str, test_cases: List[TestCase]) -
 
 #include <sstream>
 #include <iomanip>
+#include <iostream>
 
 int main() {{
     ios_base::sync_with_stdio(false);

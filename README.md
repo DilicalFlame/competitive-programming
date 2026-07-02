@@ -1,19 +1,19 @@
-# 🚀 Competitive Programming Workspace
+# Competitive Programming Workspace
 
 A powerful, automated workspace for competitive programming with support for **Codeforces**, **LeetCode**, **AtCoder**, and **HackerRank**.
 
 ![Workspace Overview](attachments/workspace.png)
 
-## ✨ Features
+## Features
 
-- 🎯 **Multi-Platform Support**: Codeforces, LeetCode, AtCoder, HackerRank
-- 🔧 **Interactive File Generation**: Beautiful CLI interface for creating boilerplate files
-- 🧪 **Automated Testing**: Run test cases with performance metrics
-- ⚡ **Fast Compilation**: Optimized C++ compilation with proper flags
-- 📊 **Detailed Results**: Visual test results with execution time and memory usage
-- 🎨 **Rich UI**: Colorful terminal output with progress indicators
+- **Multi-Platform Support**: Codeforces, LeetCode, AtCoder, HackerRank
+- **Interactive File Generation**: Beautiful CLI interface for creating boilerplate files
+- **Automated Testing**: Run test cases with performance metrics
+- **Fast Compilation**: Optimized C++ compilation with proper flags
+- **Detailed Results**: Visual test results with execution time and memory usage
+- **Rich UI**: Colorful terminal output with progress indicators
 
-## 🛠️ Setup
+## Setup
 
 ### Linux/macOS
 
@@ -31,8 +31,6 @@ For Windows users, run the PowerShell setup script:
 .\setup.ps1
 ```
 
-Or if you prefer using CMD, first ensure you have uv installed, then manually create the directories.
-
 The setup will:
 
 - Check for `uv` package manager (install manually if not found)
@@ -44,16 +42,14 @@ The setup will:
 
 > **Note**: This workspace uses `uv` for Python package management, which provides faster dependency resolution and isolated environments.
 
-## 📁 Project Structure
+## Project Structure
 
 ```folder-structure
 cp/
 ├── create                  # Interactive file generator (Linux/macOS)
 ├── create.ps1              # Interactive file generator (PowerShell)
-├── create.cmd              # Interactive file generator (CMD)
 ├── run                     # Test runner (Linux/macOS)
 ├── run.ps1                 # Test runner (PowerShell)
-├── run.cmd                 # Test runner (CMD)
 ├── setup.sh                # Setup script (Linux/macOS)
 ├── setup.ps1               # Setup script (PowerShell)
 ├── 01_codeforces/          # Codeforces problems
@@ -68,7 +64,7 @@ cp/
     └── test_runner.py      # Test execution logic
 ```
 
-## 🎮 Usage
+## Usage
 
 ### Creating New Problems
 
@@ -141,13 +137,6 @@ Execute tests for any problem:
 .\run.ps1 <filename> -g -O0    # With additional compile flags
 ```
 
-**Windows CMD:**
-
-```cmd
-run.cmd <filename>           # Basic testing
-run.cmd <filename> -g -O0    # With additional compile flags
-```
-
 #### Examples
 
 **Linux/macOS:**
@@ -166,15 +155,7 @@ run.cmd <filename> -g -O0    # With additional compile flags
 .\run.ps1 problem_name -DDEBUG   # Test with debug flag
 ```
 
-**Windows CMD:**
-
-```cmd
-run.cmd 4A_watermelon          # Test 4A.cpp
-run.cmd 1_two-sum              # Test two_sum.cpp
-run.cmd problem_name -DDEBUG   # Test with debug flag
-```
-
-## 📝 Test Case Format
+## Test Case Format
 
 ### Standard Problems (Codeforces, AtCoder, HackerRank)
 
@@ -219,7 +200,7 @@ Sample Output: 1 2
 ```
 ````
 
-## ⚡ Performance Features
+## Performance Features
 
 - **Optimized Compilation**: Uses `-std=c++17 -O2 -Wall -Wextra` flags
 - **Fast I/O**: Templates include `ios_base::sync_with_stdio(false)`
@@ -227,4 +208,4 @@ Sample Output: 1 2
 - **Execution Time**: Precise timing for each test
 - **Parallel Testing**: Efficient test case execution
 
-## 🏆 Happy Competitive Programming!
+## Happy Competitive Programming!

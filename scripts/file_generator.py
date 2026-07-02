@@ -5,7 +5,6 @@ Creates boilerplate files for different platforms with interactive UI
 """
 
 import os
-import sys
 from enum import Enum
 from dataclasses import dataclass
 from typing import Optional
@@ -18,7 +17,6 @@ try:
     from rich.text import Text
     from rich.table import Table
     from rich.align import Align
-    from rich import print as rprint
     RICH_AVAILABLE = True
 except ImportError:
     RICH_AVAILABLE = False
@@ -36,7 +34,7 @@ class Colors:
     MAGENTA = '\033[35m'
     CYAN = '\033[36m'
     WHITE = '\033[37m'
-    
+
     # Bright colors
     BRIGHT_BLACK = '\033[90m'
     BRIGHT_RED = '\033[91m'
@@ -46,7 +44,7 @@ class Colors:
     BRIGHT_MAGENTA = '\033[95m'
     BRIGHT_CYAN = '\033[96m'
     BRIGHT_WHITE = '\033[97m'
-    
+
     # Styles
     RESET = '\033[0m'
     BOLD = '\033[1m'
@@ -87,7 +85,7 @@ class Platform(Enum):
     LEETCODE = ("02_leetcode", "LeetCode", "https://leetcode.com/")
     ATCODER = ("03_atcoder", "AtCoder", "https://atcoder.jp/")
     HACKERRANK = ("04_hackerrank", "HackerRank", "https://www.hackerrank.com/")
-    
+
     def __init__(self, folder, display_name, base_url):
         self.folder = folder
         self.display_name = display_name
@@ -103,10 +101,10 @@ class FileConfig:
 
 def print_header():
     if RICH_AVAILABLE:
-        header = Text("🚀 Competitive Programming File Generator", style="bold blue")
+        header = Text("Competitive Programming File Generator", style="bold blue")
         console.print(Panel(Align.center(header), border_style="bright_blue"))
     else:
-        colored_print("🚀 Competitive Programming File Generator", Colors.BRIGHT_CYAN, Colors.BOLD)
+        colored_print("Competitive Programming File Generator", Colors.BRIGHT_CYAN, Colors.BOLD)
         colored_print("=" * 50, Colors.BRIGHT_BLUE)
 
 def select_platform() -> Platform:
@@ -127,12 +125,12 @@ def select_platform() -> Platform:
             table = Table(title="Available Platforms")
             table.add_column("Number", style="cyan")
             table.add_column("Platform", style="magenta")
-            
+
             for i, platform in enumerate(Platform, 1):
                 table.add_row(str(i), platform.display_name)
-            
+
             console.print(table)
-            
+
             while True:
                 choice = Prompt.ask("Select platform (1-4)", default="1")
                 try:
@@ -146,7 +144,7 @@ def select_platform() -> Platform:
             colored_print("\nAvailable Platforms:", Colors.BRIGHT_CYAN, Colors.BOLD)
             for i, platform in enumerate(Platform, 1):
                 colored_print(f"{i}. ", Colors.BRIGHT_WHITE, end="")
-                
+
                 # Color-code platforms
                 if platform == Platform.CODEFORCES:
                     colored_print(platform.display_name, Colors.BRIGHT_BLUE, Colors.BOLD)
@@ -156,7 +154,7 @@ def select_platform() -> Platform:
                     colored_print(platform.display_name, Colors.BRIGHT_GREEN, Colors.BOLD)
                 elif platform == Platform.HACKERRANK:
                     colored_print(platform.display_name, Colors.BRIGHT_MAGENTA, Colors.BOLD)
-            
+
             while True:
                 try:
                     colored_print("Select platform (1-4): ", Colors.WHITE, end="")
@@ -174,7 +172,7 @@ def get_filename(platform: Platform) -> str:
     else:
         colored_print(f"Enter filename (without .cpp extension): ", Colors.BRIGHT_CYAN, end="")
         filename = input()
-    
+
     return filename.strip()
 
 def get_leetcode_details() -> tuple[str, str, str]:
@@ -190,7 +188,7 @@ def get_leetcode_details() -> tuple[str, str, str]:
         return_type = input().strip() or "int"
         colored_print("Enter parameters (e.g., 'vector<int>& nums, int target'): ", Colors.BRIGHT_CYAN, end="")
         parameters = input().strip()
-    
+
     return method_name, return_type, parameters
 
 def create_standard_cpp_file(config: FileConfig, filepath: str) -> None:
@@ -214,21 +212,21 @@ using namespace std;
 int main() {{
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
-    
+
     // Your code here
-    
+
     return 0;
 }}
 """
-    
-    with open(filepath, 'w') as f:
+
+    with open(filepath, 'w', encoding='utf-8') as f:
         f.write(content)
 
 def create_leetcode_cpp_file(config: FileConfig, filepath: str) -> None:
     """Create LeetCode C++ file with Solution class"""
     # Format parameters if provided
     params = config.parameters if config.parameters else ""
-    
+
     content = f"""// {config.platform.display_name}: paste link to problem here
 
 #include <iostream>
@@ -249,12 +247,12 @@ class Solution {{
 public:
     {config.return_type} {config.method_name}({params}) {{
         // Your code here
-        
+
     }}
 }};
 """
-    
-    with open(filepath, 'w') as f:
+
+    with open(filepath, 'w', encoding='utf-8') as f:
         f.write(content)
 
 def create_standard_test_file(config: FileConfig, filepath: str) -> None:
@@ -279,8 +277,8 @@ sample output
 ## Notes
 Add any additional notes here
 """
-    
-    with open(filepath, 'w') as f:
+
+    with open(filepath, 'w', encoding='utf-8') as f:
         f.write(content)
 
 def create_leetcode_test_file(config: FileConfig, filepath: str) -> None:
@@ -304,7 +302,7 @@ def create_leetcode_test_file(config: FileConfig, filepath: str) -> None:
             sample_format = "input1 input2"
     else:
         sample_format = "input_value"
-    
+
     # Create sample output format based on return type
     sample_output = ""
     if config.return_type == "vector<int>":
@@ -319,7 +317,7 @@ def create_leetcode_test_file(config: FileConfig, filepath: str) -> None:
         sample_output = "true"
     else:
         sample_output = "expected_output"
-    
+
     content = f"""# {config.platform.display_name} - {config.filename}
 
 ## Problem Description
@@ -342,26 +340,26 @@ Sample Output: {sample_output}
 - Return type: {config.return_type}
 - Add any additional notes here
 """
-    
-    with open(filepath, 'w') as f:
+
+    with open(filepath, 'w', encoding='utf-8') as f:
         f.write(content)
 
 def create_files(config: FileConfig) -> None:
     """Create the C++ and test files"""
     # Get workspace root
     workspace_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    
+
     # Create paths
     cpp_dir = os.path.join(workspace_root, config.platform.folder)
     cpp_filepath = os.path.join(cpp_dir, f"{config.filename}.cpp")
-    
+
     test_dir = os.path.join(cpp_dir, "tests")
     test_filepath = os.path.join(test_dir, f"{config.filename}.md")
-    
+
     # Create directories if they don't exist
     os.makedirs(cpp_dir, exist_ok=True)
     os.makedirs(test_dir, exist_ok=True)
-    
+
     # Check if files already exist
     if os.path.exists(cpp_filepath) or os.path.exists(test_filepath):
         if RICH_AVAILABLE:
@@ -370,14 +368,14 @@ def create_files(config: FileConfig) -> None:
             warning(f"Files already exist for {config.filename}.")
             colored_print("Overwrite? (y/N): ", Colors.BRIGHT_YELLOW, end="")
             overwrite = input().lower().startswith('y')
-        
+
         if not overwrite:
             if RICH_AVAILABLE:
                 console.print("[yellow]Operation cancelled.[/yellow]")
             else:
                 warning("Operation cancelled.")
             return
-    
+
     # Create C++ file
     if config.platform == Platform.LEETCODE:
         create_leetcode_cpp_file(config, cpp_filepath)
@@ -385,7 +383,7 @@ def create_files(config: FileConfig) -> None:
     else:
         create_standard_cpp_file(config, cpp_filepath)
         create_standard_test_file(config, test_filepath)
-    
+
     # Success message
     if RICH_AVAILABLE:
         success_panel = Panel(
@@ -405,11 +403,11 @@ def create_files(config: FileConfig) -> None:
 def main():
     """Main function"""
     print_header()
-    
+
     try:
         # Select platform
         platform = select_platform()
-        
+
         # Get filename
         filename = get_filename(platform)
         if not filename:
@@ -418,20 +416,20 @@ def main():
             else:
                 error("Filename cannot be empty!")
             return
-        
+
         # Create config
         config = FileConfig(platform=platform, filename=filename)
-        
+
         # Get LeetCode specific details if needed
         if platform == Platform.LEETCODE:
             method_name, return_type, parameters = get_leetcode_details()
             config.method_name = method_name
             config.return_type = return_type
             config.parameters = parameters
-        
+
         # Create files
         create_files(config)
-        
+
     except KeyboardInterrupt:
         if RICH_AVAILABLE:
             console.print("\n[yellow]Operation cancelled by user.[/yellow]")
