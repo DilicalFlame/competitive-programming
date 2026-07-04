@@ -1,41 +1,25 @@
-// LeetCode: paste link to problem here
+// LeetCode: https://leetcode.com/problems/two-sum/
 
-#include <iostream>
-#include <vector>
-#include <string>
-#include <algorithm>
 #include <map>
-#include <set>
-#include <queue>
-#include <stack>
-#include <deque>
-#include <cmath>
-#include <climits>
+#include <vector>
 
 using namespace std;
 
-class Solution
-{
+class Solution {
 public:
-    vector<int> twoSum(vector<int> &nums, int target)
-    {
-        map<int, int> numToIndex;
+  vector<int> twoSum(vector<int> &nums, int target) {
+    map<int, int> numToIndex;
 
-        for (int i = 0; i < nums.size(); i++)
-        {
-            int complement = target - nums[i];
+    for (int i = 0; i < nums.size(); i++) {
+      int complement = target - nums[i];
 
-            // Check if complement exists in the map
-            if (numToIndex.find(complement) != numToIndex.end())
-            {
-                return {numToIndex[complement], i};
-            }
+      if (numToIndex.find(complement) != numToIndex.end()) {
+        return {numToIndex[complement], i};
+      }
 
-            // Store current number and its index
-            numToIndex[nums[i]] = i;
-        }
-
-        // Should never reach here based on problem constraints
-        return {};
+      numToIndex[nums[i]] = i;
     }
+
+    return {};
+  }
 };
