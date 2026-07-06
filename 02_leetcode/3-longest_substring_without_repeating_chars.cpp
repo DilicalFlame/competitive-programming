@@ -10,23 +10,23 @@ using namespace std;
 class Solution {
 public:
   int lengthOfLongestSubstring(string s) {
-    int answer = 0;
+    int ans = 0;
 
     if (s == "")
-      return answer;
+      return ans;
 
-    unordered_map<char, int> hashIdx{};
-    int left_idx = 0;
+    // character to index mapping
+    unordered_map<char, int> cidx{};
+    int lidx = 0;
 
-    for (int right_idx = 0; right_idx < s.length(); right_idx++) {
-      char current_char = s[right_idx];
-      if (hashIdx.count(current_char) > 0 &&
-          hashIdx[current_char] >= left_idx) {
-        left_idx = hashIdx[current_char] + 1;
+    for (int ridx = 0; ridx < s.length(); ridx++) {
+      char c = s[ridx];
+      if (cidx.count(c) > 0 && cidx[c] >= lidx) {
+        lidx = cidx[c] + 1;
       }
-      hashIdx[current_char] = right_idx;
-      answer = max(right_idx - left_idx + 1, answer);
+      cidx[c] = ridx;
+      ans = max(ridx - lidx + 1, ans);
     }
-    return answer;
+    return ans;
   }
 };
